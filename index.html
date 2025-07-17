@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="محاسبه‌گر شاخص توده بدنی (BMI) - ابزار آنلاین برای بررسی وضعیت وزن شما با دقت علمی و ارائه توصیه‌های سلامتی شخصی‌سازی شده">
+    <meta name="keywords" content="BMI, شاخص توده بدنی, محاسبه وزن ایده‌آل, کاهش وزن, افزایش وزن, سلامت بدن, تناسب اندام, رژیم غذایی">
+    <meta property="og:title" content="محاسبه‌گر BMI هوشمند | بررسی وضعیت وزن با توصیه‌های شخصی">
+    <meta property="og:image" content="https://example.com/bmi-calculator.jpg">
+    <meta property="og:description" content="محاسبه دقیق شاخص توده بدنی با تحلیل علمی و پیشنهادهای کاربردی برای هر محدوده وزنی">
+    <meta property="og:url" content="https://example.com/bmi-calculator">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>محاسبه‌گر BMI | بررسی وضعیت وزن با توصیه‌های سلامتی</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "محاسبه‌گر BMI هوشمند",
+      "description": "ابزار محاسبه شاخص توده بدنی با ارائه توصیه‌های سلامتی شخصی‌سازی شده",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "IRR"
+      }
+    }
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8b5cf6',
+                        secondary: '#f59e0b',
+                        accent: '#10b981',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        sans: ['IranYekan', 'Tahoma', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @font-face {
+            font-family: 'IranYekan';
+            src: url('https://cdn.fontcdn.ir/Font/Persian/IranYekan/IranYekan-Regular.ttf') format('truetype');
+            font-weight: normal;
+        }
+        
+        @font-face {
+            font-family: 'IranYekan';
+            src: url('https://cdn.fontcdn.ir/Font/Persian/IranYekan/IranYekan-Bold.ttf') format('truetype');
+            font-weight: bold;
+        }
+        
+        body {
+            font-family: 'IranYekan', Tahoma, sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .rtl {
+            direction: rtl;
+        }
+        
+        .scale-in {
+            animation: scaleIn 0.3s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        .nutrition-icon {
+            background-color: #f0fdf4;
+            color: #10b981;
+        }
+        
+        .exercise-icon {
+            background-color: #eff6ff;
+            color: #3b82f6;
+        }
+        
+        .warning-icon {
+            background-color: #fef2f2;
+            color: #ef4444;
+        }
+        
+        .timeline-item:not(:last-child):after {
+            content: '';
+            position: absolute;
+            top: 24px;
+            right: 11px;
+            height: 100%;
+            width: 2px;
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="rtl min-h-screen bg-gradient-to-b from-primary/10 to-light">
+    <header class="bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl md:text-3xl font-bold">محاسبه‌گر شاخص توده بدنی (BMI)</h1>
+                <!-- <button id="darkModeToggle" class="p-2 rounded-full bg-white/20 hover:bg-white/30 transition">
+                    <i class="fas fa-moon text-white"></i>
+                </button> -->
+            </div>
+            <p class="mt-2 opacity-90">بررسی علمی وضعیت وزن شما با ارائه راهکارهای عملی</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Calculator Section -->
+            <div class="lg:col-span-2">
+                <div class="card bg-white rounded-xl shadow-md p-6 mb-8 scale-in">
+                    <h2 class="text-xl font-bold mb-6 text-dark border-b-2 border-secondary pb-2">اطلاعات خود را وارد کنید</h2>
+                    
+                    <form id="bmiForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Gender -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">جنسیت</label>
+                                <div class="flex space-x-4 space-x-reverse">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="gender" value="male" checked class="form-radio text-primary">
+                                        <span class="mr-2">مرد</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="gender" value="female" class="form-radio text-primary">
+                                        <span class="mr-2">زن</span>
+                                    </label>
+                                </div>
+                            </div>
+                                                        
+                            <!-- Age (optional) -->
+                            <div>
+                                <label for="age" class="block text-sm font-medium text-gray-700 mb-2">سن (اختیاری)</label>
+                                <input type="number" id="age" min="2" max="120" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+                        </div>
+                                                
+                        <!-- Height -->
+                        <div>
+                            <label for="height" class="block text-sm font-medium text-gray-700 mb-2">قد</label>
+                            <div class="flex">
+                                <input type="number" id="height" min="50" max="250" step="0.1" required class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-primary focus:border-primary">
+                                <select id="heightUnit" class="px-4 py-2 border border-r-0 border-gray-300 rounded-r-lg bg-gray-50 focus:ring-primary focus:border-primary">
+                                    <option value="cm">سانتی‌متر</option>
+                                    <option value="in">اینچ</option>
+                                </select>
+                            </div>
+                            <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                                <div id="heightSlider" class="h-full bg-primary rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                                                
+                        <!-- Weight -->
+                        <div>
+                            <label for="weight" class="block text-sm font-medium text-gray-700 mb-2">وزن</label>
+                            <div class="flex">
+                                <input type="number" id="weight" min="10" max="300" step="0.1" required class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-primary focus:border-primary">
+                                <select id="weightUnit" class="px-4 py-2 border border-r-0 border-gray-300 rounded-r-lg bg-gray-50 focus:ring-primary focus:border-primary">
+                                    <option value="kg">کیلوگرم</option>
+                                    <option value="lb">پوند</option>
+                                </select>
+                            </div>
+                            <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                                <div id="weightSlider" class="h-full bg-primary rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                                                
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center">
+                                <i class="fas fa-calculator ml-2"></i>
+                                محاسبه BMI
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                                
+                <!-- Results Section (initially hidden) -->
+                <div id="resultsSection" class="card bg-white rounded-xl shadow-md p-6 hidden scale-in">
+                    <h2 class="text-xl font-bold mb-6 text-dark border-b-2 border-secondary pb-2">نتیجه محاسبه</h2>
+                                        
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                        <!-- BMI Value -->
+                        <div class="text-center">
+                            <div class="relative w-32 h-32 mx-auto mb-4">
+                                <svg class="w-full h-full" viewBox="0 0 100 100">
+                                    <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
+                                    <circle id="bmiCircle" class="text-primary" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" stroke-dasharray="251.2" stroke-dashoffset="125.6" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                    <span id="bmiValue" class="text-3xl font-bold">--</span>
+                                    <span class="text-sm">شاخص توده بدنی</span>
+                                </div>
+                            </div>
+                            <p id="bmiCategory" class="text-lg font-semibold">وضعیت: --</p>
+                        </div>
+                                                
+                        <!-- Category Info -->
+                        <div class="md:col-span-2">
+                            <div id="categoryInfo" class="space-y-4">
+                                <p id="bmiDescription" class="text-gray-700">لطفاً اطلاعات خود را وارد کرده و دکمه محاسبه را بزنید.</p>
+                                <div id="bmiSuggestions" class="bg-accent/10 p-4 rounded-lg border-l-4 border-accent">
+                                    <h4 class="font-bold text-accent mb-2"><i class="fas fa-lightbulb ml-2"></i>پیشنهادهای سلامتی</h4>
+                                    <p id="suggestionsText">پس از محاسبه، پیشنهادهای متناسب با وضعیت شما نمایش داده می‌شود.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Detailed Recommendations Section -->
+                            <div id="detailedRecommendations" class="mt-6 hidden">
+                                <h3 class="font-bold text-lg mb-4 flex items-center">
+                                    <i class="fas fa-clipboard-list ml-2 text-primary"></i>
+                                    راهنمای عملی برای شما
+                                </h3>
+                                
+                                <div class="space-y-6">
+                                    <!-- Nutrition Section -->
+                                    <div>
+                                        <h4 class="font-semibold mb-3 flex items-center">
+                                            <span class="w-6 h-6 rounded-full flex items-center justify-center nutrition-icon mr-2">
+                                                <i class="fas fa-utensils text-sm"></i>
+                                            </span>
+                                            توصیه‌های تغذیه‌ای
+                                        </h4>
+                                        <div id="nutritionTips" class="bg-gray-50 p-4 rounded-lg"></div>
+                                    </div>
+                                    
+                                    <!-- Exercise Section -->
+                                    <div>
+                                        <h4 class="font-semibold mb-3 flex items-center">
+                                            <span class="w-6 h-6 rounded-full flex items-center justify-center exercise-icon mr-2">
+                                                <i class="fas fa-running text-sm"></i>
+                                            </span>
+                                            توصیه‌های ورزشی
+                                        </h4>
+                                        <div id="exerciseTips" class="bg-gray-50 p-4 rounded-lg"></div>
+                                    </div>
+                                    
+                                    <!-- Warnings Section -->
+                                    <div>
+                                        <h4 class="font-semibold mb-3 flex items-center">
+                                            <span class="w-6 h-6 rounded-full flex items-center justify-center warning-icon mr-2">
+                                                <i class="fas fa-exclamation-triangle text-sm"></i>
+                                            </span>
+                                            موارد احتیاط
+                                        </h4>
+                                        <div id="warningTips" class="bg-gray-50 p-4 rounded-lg"></div>
+                                    </div>
+                                    
+                                    <!-- Follow-up Timeline -->
+                                    <div>
+                                        <h4 class="font-semibold mb-3 flex items-center">
+                                            <i class="fas fa-calendar-check ml-2 text-primary"></i>
+                                            زمان مراجعه بعدی
+                                        </h4>
+                                        <div id="followupTimeline" class="relative pl-6">
+                                            <!-- Timeline items will be added here by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <button id="saveBtn" class="bg-secondary hover:bg-secondary/90 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                            <i class="fas fa-save ml-2"></i>
+                            ذخیره نتیجه
+                        </button>
+                        <button id="shareBtn" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                            <i class="fas fa-share-alt ml-2"></i>
+                            اشتراک‌گذاری
+                        </button>
+                        <button id="historyBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm flex items-center">
+                            <i class="fas fa-history ml-2"></i>
+                            تاریخچه
+                        </button>
+                        <button id="showMoreBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm flex items-center hidden">
+                            <i class="fas fa-chevron-down ml-2"></i>
+                            مشاهده جزئیات بیشتر
+                        </button>
+                    </div>
+                </div>
+                                
+                <!-- BMI Chart -->
+                <div class="card bg-white rounded-xl shadow-md p-6 mt-8 scale-in">
+                    <h2 class="text-xl font-bold mb-4 text-dark border-b-2 border-secondary pb-2">نمودار وضعیت BMI</h2>
+                    <div class="h-12 relative flex items-center mt-6">
+                        <div class="absolute inset-0 flex">
+                            <div class="h-full bg-blue-100 w-[15%] flex items-end justify-center">
+                                <span class="text-xs mb-1">کم‌وزن</span>
+                            </div>
+                            <div class="h-full bg-green-100 w-[35%] flex items-end justify-center">
+                                <span class="text-xs mb-1">نرمال</span>
+                            </div>
+                            <div class="h-full bg-yellow-100 w-[25%] flex items-end justify-center">
+                                <span class="text-xs mb-1">اضافه وزن</span>
+                            </div>
+                            <div class="h-full bg-red-100 w-[25%] flex items-end justify-center">
+                                <span class="text-xs mb-1">چاق</span>
+                            </div>
+                        </div>
+                        <div id="bmiIndicator" class="absolute top-0 w-1 h-16 -mt-4  bg-primary" style="left: 50%">
+                            <div class="absolute -top-4 -left-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center shadow-md">
+                                <div class="w-3 h-3 bg-white rounded-full"></div>
+
+
+                    
+                        </div>
+                            </div>
+                    </div>
+                    <div class="flex justify-between text-xs mt-2">
+                        <span>15</span>
+                        <span>18.5</span>
+                        <span>25</span>
+                        <span>30</span>
+                        <span>40</span>
+                    </div>
+                </div>
+            </div>
+                    
+            <!-- Info Section -->
+            <div class="space-y-6">
+                <!-- About BMI -->
+                <div class="card bg-white rounded-xl shadow-md p-6 scale-in">
+                    <h2 class="text-xl font-bold mb-4 text-dark border-b-2 border-secondary pb-2">شاخص توده بدنی چیست؟</h2>
+                    <div class="space-y-4 text-gray-700">
+                        <p>شاخص توده بدنی (BMI) معیاری برای ارزیابی وضعیت وزن یک فرد نسبت به قد اوست. این شاخص با تقسیم وزن (کیلوگرم) بر مجذور قد (متر) محاسبه می‌شود.</p>
+                        <div class="bg-primary/10 p-3 rounded-lg">
+                            <p class="font-bold text-primary">فرمول محاسبه BMI:</p>
+                            <p class="text-center text-lg mt-2">BMI = وزن (kg) / (قد (m) × قد (m))</p>
+                        </div>
+                        <p>این شاخص ابزاری مفید برای غربالگری اولیه است اما محدودیت‌هایی دارد و برای تشخیص دقیق باید با پزشک مشورت کنید.</p>
+                    </div>
+                </div>
+                                
+                <!-- Health Tips -->
+                <div class="card bg-white rounded-xl shadow-md p-6 scale-in">
+                    <h2 class="text-xl font-bold mb-4 text-dark border-b-2 border-secondary pb-2">نکات سلامتی</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-accent text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-utensils text-xs"></i>
+                            </div>
+                            <p class="mr-2 text-gray-700">رژیم غذایی متعادل با میوه‌ها، سبزیجات و پروتئین‌های کم‌چرب داشته باشید.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-accent text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-running text-xs"></i>
+                            </div>
+                            <p class="mr-2 text-gray-700">حداقل 150 دقیقه فعالیت بدنی متوسط در هفته توصیه می‌شود.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-accent text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-glass-whiskey text-xs"></i>
+                            </div>
+                            <p class="mr-2 text-gray-700">مصرف آب کافی (8-10 لیوان در روز) برای متابولیسم بدن ضروری است.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-accent text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-bed text-xs"></i>
+                            </div>
+                            <p class="mr-2 text-gray-700">خواب کافی (7-9 ساعت) به تنظیم هورمون‌های گرسنگی کمک می‌کند.</p>
+                        </div>
+                    </div>
+                </div>
+                                
+                <!-- FAQ -->
+                <div class="card bg-white rounded-xl shadow-md p-6 scale-in">
+                    <h2 class="text-xl font-bold mb-4 text-dark border-b-2 border-secondary pb-2">سوالات متداول</h2>
+                    <div class="space-y-4">
+                        <div class="accordion-item border-b border-gray-200 pb-3">
+                            <button class="accordion-btn flex justify-between items-center w-full text-right font-medium text-gray-700 hover:text-primary">
+                                <span>BMI دقیقاً چه چیزی را اندازه‌گیری می‌کند؟</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform"></i>
+                            </button>
+                            <div class="accordion-content hidden mt-2 text-sm text-gray-600">
+                                BMI رابطه بین وزن و قد را اندازه‌گیری می‌کند و به عنوان شاخصی از چربی بدن استفاده می‌شود. با این حال، این شاخص مستقیماً چربی بدن را اندازه نمی‌گیرد و بین توده عضلانی و چربی تفاوتی قائل نمی‌شود.
+                            </div>
+                        </div>
+                                                
+                        <div class="accordion-item border-b border-gray-200 pb-3">
+                            <button class="accordion-btn flex justify-between items-center w-full text-right font-medium text-gray-700 hover:text-primary">
+                                <span>آیا BMI برای همه افراد دقیق است؟</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform"></i>
+                            </button>
+                            <div class="accordion-content hidden mt-2 text-sm text-gray-600">
+                                خیر، BMI برای ورزشکاران با توده عضلانی بالا، زنان باردار، افراد مسن و کودکان ممکن است دقیق نباشد. همچنین تفاوت‌های نژادی و جنسیتی در تفسیر BMI باید در نظر گرفته شود.
+                            </div>
+                        </div>
+                                                
+                        <div class="accordion-item border-b border-gray-200 pb-3">
+                            <button class="accordion-btn flex justify-between items-center w-full text-right font-medium text-gray-700 hover:text-primary">
+                                <span>تفاوت BMI با درصد چربی بدن چیست؟</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform"></i>
+                            </button>
+                            <div class="accordion-content hidden mt-2 text-sm text-gray-600">
+                                BMI فقط وزن نسبت به قد را می‌سنجد، در حالی که درصد چربی بدن مستقیماً مقدار چربی بدن را اندازه می‌گیرد. درصد چربی بدن معیار دقیق‌تری است اما نیاز به ابزارهای خاصی مانند کالیپر یا دستگاه‌های بیوالکتریکال دارد.
+                            </div>
+                        </div>
+                                                
+                        <div class="accordion-item border-b border-gray-200 pb-3">
+                            <button class="accordion-btn flex justify-between items-center w-full text-right font-medium text-gray-700 hover:text-primary">
+                                <span>آیا محدوده BMI ایده‌آل برای همه سنین یکسان است؟</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform"></i>
+                            </button>
+                            <div class="accordion-content hidden mt-2 text-sm text-gray-600">
+                                خیر، برای کودکان و نوجوانان از نمودارهای رشد و صدک‌های BMI استفاده می‌شود. افراد بالای 65 سال ممکن است محدوده BMI کمی بالاتر (تا 27) داشته باشند که با سلامت بهتر مرتبط است.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+                
+        <!-- History Modal -->
+        <div id="historyModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+                <div class="p-4 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-lg">تاریخچه محاسبات</h3>
+                    <button id="closeHistory" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="historyList" class="p-4 space-y-3">
+                    <!-- History items will be added here by JavaScript -->
+                </div>
+                <div class="p-4 border-t flex justify-end">
+                    <button id="clearHistory" class="text-red-500 hover:text-red-700 text-sm flex items-center">
+                        <i class="fas fa-trash-alt ml-2"></i>
+                        پاک کردن تاریخچه
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="md:order-2">
+                    <h3 class="text-lg font-bold mb-4">محاسبه‌گر BMI</h3>
+                    <p class="text-gray-300">ابزاری دقیق و علمی برای بررسی وضعیت وزن شما بر اساس شاخص توده بدنی با ارائه راهکارهای عملی برای بهبود سلامت.</p>
+                </div>
+                                
+                <div class="md:order-1">
+                    <h3 class="text-lg font-bold mb-4">ارتباط با ما</h3>
+                    <div class="flex space-x-4 space-x-reverse">
+                        <a href="https://www.instagram.com/siteup_web/profilecard" target="_blank" class="bg-gradient-to-br from-pink-500 to-orange-400 w-10 h-10 rounded-full flex items-center justify-center hover:opacity-90 transition">
+                            <i class="fab fa-instagram text-white"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/maedeh-rezaei-079570329" target="_blank" class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center hover:opacity-90 transition">
+                            <i class="fab fa-linkedin-in text-white"></i>
+                        </a>
+                        <a href="#" class="bg-blue-400 w-10 h-10 rounded-full flex items-center justify-center hover:opacity-90 transition">
+                            <i class="fab fa-telegram text-white"></i>
+                        </a>
+                    </div>
+                    <p class="mt-4 text-gray-300 text-sm">طراح و توسعه : آیدا رضائی  </p>
+                    <p class="mt-4 text-gray-300 text-sm">© 2023 محاسبه‌گر BMI. تمام حقوق محفوظ است.  </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const bmiForm = document.getElementById('bmiForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const bmiValue = document.getElementById('bmiValue');
+        const bmiCategory = document.getElementById('bmiCategory');
+        const bmiDescription = document.getElementById('bmiDescription');
+        const suggestionsText = document.getElementById('suggestionsText');
+        const bmiCircle = document.getElementById('bmiCircle');
+        const bmiIndicator = document.getElementById('bmiIndicator');
+        const heightSlider = document.getElementById('heightSlider');
+        const weightSlider = document.getElementById('weightSlider');
+        const heightInput = document.getElementById('height');
+        const weightInput = document.getElementById('weight');
+        const heightUnit = document.getElementById('heightUnit');
+        const weightUnit = document.getElementById('weightUnit');
+        const saveBtn = document.getElementById('saveBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const historyBtn = document.getElementById('historyBtn');
+        const historyModal = document.getElementById('historyModal');
+        const closeHistory = document.getElementById('closeHistory');
+        const clearHistory = document.getElementById('clearHistory');
+        const historyList = document.getElementById('historyList');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const detailedRecommendations = document.getElementById('detailedRecommendations');
+        const nutritionTips = document.getElementById('nutritionTips');
+        const exerciseTips = document.getElementById('exerciseTips');
+        const warningTips = document.getElementById('warningTips');
+        const followupTimeline = document.getElementById('followupTimeline');
+        const showMoreBtn = document.getElementById('showMoreBtn');
+
+        // Update sliders when inputs change
+        heightInput.addEventListener('input', () => {
+            const height = parseFloat(heightInput.value) || 0;
+            const maxHeight = heightUnit.value === 'cm' ? 250 : 100;
+            const percent = (height / maxHeight) * 100;
+            heightSlider.style.width = `${percent}%`;
+        });
+
+        weightInput.addEventListener('input', () => {
+            const weight = parseFloat(weightInput.value) || 0;
+            const maxWeight = weightUnit.value === 'kg' ? 300 : 660;
+            const percent = (weight / maxWeight) * 100;
+            weightSlider.style.width = `${percent}%`;
+        });
+
+        // Handle unit changes
+        heightUnit.addEventListener('change', () => {
+            const currentHeight = parseFloat(heightInput.value) || 170;
+            if (heightUnit.value === 'cm') {
+                heightInput.value = (currentHeight * 2.54).toFixed(1);
+                heightInput.placeholder = 'سانتی‌متر';
+                heightInput.min = 50;
+                heightInput.max = 250;
+            } else {
+                heightInput.value = (currentHeight / 2.54).toFixed(1);
+                heightInput.placeholder = 'اینچ';
+                heightInput.min = 20;
+                heightInput.max = 100;
+            }
+            heightInput.dispatchEvent(new Event('input'));
+        });
+
+        weightUnit.addEventListener('change', () => {
+            const currentWeight = parseFloat(weightInput.value) || 70;
+            if (weightUnit.value === 'kg') {
+                weightInput.value = (currentWeight / 2.205).toFixed(1);
+                weightInput.placeholder = 'کیلوگرم';
+                weightInput.min = 10;
+                weightInput.max = 300;
+            } else {
+                weightInput.value = (currentWeight * 2.205).toFixed(1);
+                weightInput.placeholder = 'پوند';
+                weightInput.min = 22;
+                weightInput.max = 660;
+            }
+            weightInput.dispatchEvent(new Event('input'));
+        });
+
+        // Show more details
+        showMoreBtn.addEventListener('click', () => {
+            detailedRecommendations.classList.toggle('hidden');
+            if (detailedRecommendations.classList.contains('hidden')) {
+                showMoreBtn.innerHTML = '<i class="fas fa-chevron-down ml-2"></i> مشاهده جزئیات بیشتر';
+            } else {
+                showMoreBtn.innerHTML = '<i class="fas fa-chevron-up ml-2"></i> بستن جزئیات';
+            }
+        });
+
+        // Calculate BMI
+        bmiForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Get values
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const age = document.getElementById('age').value;
+            let height = parseFloat(heightInput.value);
+            let weight = parseFloat(weightInput.value);
+            const hUnit = heightUnit.value;
+            const wUnit = weightUnit.value;
+
+            // Convert to metric if needed
+            if (hUnit === 'in') height *= 2.54; // inches to cm
+            if (wUnit === 'lb') weight /= 2.205; // pounds to kg
+
+            // Calculate BMI
+            const heightInMeters = height / 100;
+            const bmi = weight / (heightInMeters * heightInMeters);
+            const roundedBMI = Math.round(bmi * 10) / 10;
+
+            // Determine category and recommendations
+            let category, description, suggestions;
+            let nutrition = '', exercise = '', warnings = '', followup = '';
+            
+            if (bmi < 18.5) {
+                category = 'کم‌وزن';
+                description = 'شما در محدوده کم‌وزن قرار دارید. این ممکن است نشان‌دهنده سوءتغذیه یا مشکلات سلامتی دیگر باشد.';
+                suggestions = 'با یک متخصص تغذیه مشورت کنید. رژیم غذایی پرکالری و پرپروتئین همراه با ورزش‌های قدرتی می‌تواند مفید باشد.';
+                
+                // Detailed recommendations for underweight
+                nutrition = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>مصرف غذاهای پرکالری و مغذی مانند آجیل، کره بادام زمینی، روغن زیتون و میوه‌های خشک</li>
+                        <li>استفاده از لبنیات پرچرب، تخم مرغ و گوشت‌های با کیفیت</li>
+                        <li>افزایش تعداد وعده‌های غذایی به 5-6 وعده در روز با حجم کمتر</li>
+                        <li>مصرف پروتئین کافی (1.2-1.5 گرم به ازای هر کیلوگرم وزن بدن)</li>
+                        <li>پرهیز از مصرف نوشیدنی‌های گازدار و آب قبل از غذا</li>
+                    </ul>
+                `;
+                
+                exercise = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>تمرینات مقاومتی 2-3 بار در هفته برای ساخت عضله</li>
+                        <li>تمرینات با وزنه متوسط و تکرارهای 8-12 تایی</li>
+                        <li>پیاده‌روی سریع یا شنا به مدت 30 دقیقه، 3 بار در هفته</li>
+                        <li>پرهیز از ورزش‌های هوازی طولانی مدت که کالری زیادی می‌سوزانند</li>
+                    </ul>
+                `;
+                
+                warnings = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>افزایش وزن سریع می‌تواند منجر به تجمع چربی ناسالم شود</li>
+                        <li>مصرف بیش از حد شیرینی‌جات و غذاهای فرآوری شده برای افزایش وزن توصیه نمی‌شود</li>
+                        <li>در صورت کاهش اشتها یا کاهش وزن ناخواسته به پزشک مراجعه کنید</li>
+                    </ul>
+                `;
+                
+                followup = `
+                    <div class="timeline-item relative pb-6">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 relative z-10">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="mr-3">
+                                <p class="font-medium">پس از 1 ماه</p>
+                                <p class="text-sm text-gray-600">بررسی تغییرات وزن و اصلاح برنامه در صورت نیاز</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item relative pb-6">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 relative z-10">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="mr-3">
+                                <p class="font-medium">پس از 3 ماه</p>
+                                <p class="text-sm text-gray-600">ارزیابی جامع وضعیت سلامت و تغییرات بدن</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } else if (bmi < 25) {
+                category = 'نرمال';
+                description = 'شما در محدوده وزن سالم قرار دارید. این بهترین وضعیت برای پیشگیری از بیماری‌های مزمن است.';
+                suggestions = 'رژیم غذایی متعادل و فعالیت بدنی منظم خود را ادامه دهید. سالانه BMI خود را چک کنید تا در این محدوده بمانید.';
+                
+                // Detailed recommendations for normal weight
+                nutrition = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>تغذیه متعادل شامل همه گروه‌های غذایی اصلی</li>
+                        <li>مصرف روزانه 5 وعده میوه و سبزیجات</li>
+                        <li>استفاده از غلات کامل به جای محصولات تصفیه شده</li>
+                        <li>مصرف متعادل پروتئین‌های گیاهی و حیوانی</li>
+                        <li>محدود کردن مصرف چربی‌های اشباع و قندهای افزوده</li>
+                    </ul>
+                `;
+                
+                exercise = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>حداقل 150 دقیقه فعالیت هوازی متوسط یا 75 دقیقه فعالیت شدید در هفته</li>
+                        <li>تمرینات قدرتی 2 بار در هفته برای تمام گروه‌های عضلانی اصلی</li>
+                        <li>فعالیت‌های انعطاف‌پذیری و تعادلی 2-3 بار در هفته</li>
+                        <li>کاهش زمان نشستن و افزایش فعالیت‌های روزمره</li>
+                    </ul>
+                `;
+                
+                warnings = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>حتی با وزن نرمال، توزیع نامناسب چربی بدن می‌تواند خطرناک باشد</li>
+                        <li>مراقب افزایش وزن تدریجی در طول زمان باشید</li>
+                        <li>استرس و کم‌خوابی می‌توانند تعادل وزن را برهم بزنند</li>
+                    </ul>
+                `;
+                
+                followup = `
+                    <div class="timeline-item relative pb-6">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 relative z-10">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="mr-3">
+                                <p class="font-medium">هر 3 ماه</p>
+                                <p class="text-sm text-gray-600">بررسی وزن و تطبیق با تغییرات احتمالی</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item relative pb-6">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 relative z-10">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="mr-3">
+                                <p class="font-medium">سالانه</p>
+                                <p class="text-sm text-gray-600">چکاپ کامل سلامت و ارزیابی ترکیب بدن</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } else if (bmi < 30) {
+                category = 'اضافه وزن';
+                description = 'شما در محدوده اضافه وزن قرار دارید. این ممکن است خطر ابتلا به بیماری‌هایی مانند دیابت و فشار خون را افزایش دهد.';
+                suggestions = 'کاهش وزن تدریجی (0.5-1 کیلوگرم در هفته) با رژیم غذایی سالم و ورزش منظم توصیه می‌شود. از رژیم‌های سخت پرهیز کنید.';
+                
+                // Detailed recommendations for overweight
+                nutrition = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>کاهش 300-500 کالری از مصرف روزانه برای کاهش وزن تدریجی</li>
+                        <li>افزایش مصرف فیبر از طریق سبزیجات، میوه‌ها و غلات کامل</li>
+                        <li>انتخاب پروتئین‌های کم چرب مانند مرغ بدون پوست، ماهی و حبوبات</li>
+                        <li>محدود کردن مصرف چربی‌های اشباع و غذاهای فرآوری شده</li>
+                        <li>نوشیدن آب کافی و پرهیز از نوشیدنی‌های شیرین</li>
+                    </ul>
+                `;
+                
+                exercise = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>حداقل 200-300 دقیقه فعالیت هوازی متوسط در هفته</li>
+                        <li>تمرینات قدرتی 2-3 بار در هفته برای حفظ توده عضلانی</li>
+                        <li>شروع با فعالیت‌های کم فشار مانند پیاده‌روی یا شنا</li>
+                        <li>افزایش تدریجی شدت و مدت تمرینات</li>
+                        <li>افزایش فعالیت‌های روزمره مانند استفاده از پله به جای آسانسور</li>
+                    </ul>
+                `;
+                
+                warnings = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>کاهش وزن سریع می‌تواند منجر به از دست دادن عضله شود</li>
+                        <li>رژیم‌های بسیار کم کالری بدون نظارت پزشک خطرناک هستند</li>
+                        <li>تغییرات شدید در رژیم غذایی معمولاً پایدار نیستند</li>
+                    </ul>
+                `;
+                
+                followup = `
+                    <div class="timeline-item relative pb-6">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 relative z-10">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="mr-3">
+                                <p class="font-medium">هر 2 هفته</p>
+                                <p class="text-sm text-gray-600">بررسی وزن و تطبیق برنامه در صورت نیاز</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item relative pb-6">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 relative z-10">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="mr-3">
+                                <p class="font-medium">پس از 2 ماه</p>
+                                <p class="text-sm text-gray-600">ارزیابی پیشرفت و اصلاح برنامه کاهش وزن</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } else {
+                category = 'چاق';
+                description = 'شما در محدوده چاقی قرار دارید. این وضعیت خطر جدی برای سلامت شما محسوب می‌شود و نیاز به اقدام دارد.';
+                suggestions = 'با پزشک یا متخصص تغذیه مشورت کنید. کاهش وزن تحت نظارت متخصص، تغییر سبک زندگی و فعالیت بدنی منظم ضروری است.';
+                
+                // Detailed recommendations for obese
+                nutrition = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>مشاوره با متخصص تغذیه برای برنامه‌ریزی کاهش وزن ایمن</li>
+                        <li>کاهش 500-1000 کالری از مصرف روزانه برای کاهش وزن 0.5-1 کیلوگرم در هفته</li>
+                        <li>تمرکز بر غذاهای با تراکم کالری پایین مانند سبزیجات و سوپ‌ها</li>
+                        <li>کنترل اندازه وعده‌ها و ثبت دقیق مصرف غذایی</li>
+                        <li>پرهیز کامل از غذاهای فرآوری شده، فست فود و نوشیدنی‌های شیرین</li>
+                    </ul>
+                `;
+                
+                exercise = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>شروع با فعالیت‌های کم فشار مانند پیاده‌روی یا ورزش‌های آبی</li>
+                        <li>هدف 150 دقیقه فعالیت هوازی متوسط در هفته، تقسیم به جلسات کوتاه‌تر</li>
+                        <li>تمرینات مقاومتی 2-3 بار در هفته برای حفظ توده عضلانی</li>
+                        <li>افزایش تدریجی فعالیت‌های روزمره</li>
+                        <li>استفاده از دستگاه‌های کمکی در صورت نیاز برای کاهش فشار بر مفاصل</li>
+                    </ul>
+                `;
+                
+                warnings = `
+                    <ul class="list-disc mr-4 space-y-2">
+                        <li>کاهش وزن سریع می‌تواند خطرناک باشد و باید تحت نظارت پزشک انجام شود</li>
+                        <li>ممکن است نیاز به بررسی شرایط پزشکی زمینه‌ای مانند دیابت یا فشار خون باشد</li>
+                        <li>برخی داروها می‌توانند بر وزن تأثیر بگذارند که باید با پزشک در میان گذاشته شود</li>
+                    </ul>
+                `;
+                
+                followup = `
+                    <div class="timeline-item relative pb-6">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 relative z-10">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="mr-3">
+                                <p class="font-medium">هر هفته</p>
+                                <p class="text-sm text-gray-600">بررسی وزن و اصلاح برنامه تحت نظارت پزشک</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item relative pb-6">
+                        <div class="flex items-start">
+                            <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 relative z-10">
+                                <i class="fas fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="mr-3">
+                                <p class="font-medium">هر ماه</p>
+                                <p class="text-sm text-gray-600">ارزیابی جامع سلامت و بررسی نیاز به مداخلات پزشکی</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Add gender-specific notes
+            if (gender === 'female') {
+                description += ' برای زنان، توزیع چربی بدن معمولاً متفاوت است و ممکن است نیاز به ارزیابی دقیق‌تری داشته باشد.';
+            }
+
+            // Add age-specific notes if provided
+            if (age) {
+                const ageNum = parseInt(age);
+                if (ageNum < 18) {
+                    description += ' توجه: برای کودکان و نوجوانان تفسیر BMI متفاوت است و باید از نمودارهای رشد استفاده شود.';
+                } else if (ageNum > 65) {
+                    description += ' توجه: برای افراد مسن محدوده BMI ممکن است کمی بالاتر در نظر گرفته شود.';
+                }
+            }
+
+            // Display results
+            bmiValue.textContent = roundedBMI;
+            bmiCategory.textContent = `وضعیت: ${category}`;
+            bmiDescription.textContent = description;
+            suggestionsText.textContent = suggestions;
+            
+            // Display detailed recommendations
+            nutritionTips.innerHTML = nutrition;
+            exerciseTips.innerHTML = exercise;
+            warningTips.innerHTML = warnings;
+            followupTimeline.innerHTML = followup;
+            
+            // Show detailed recommendations section
+            detailedRecommendations.classList.remove('hidden');
+            showMoreBtn.classList.remove('hidden');
+            showMoreBtn.innerHTML = '<i class="fas fa-chevron-up ml-2"></i> بستن جزئیات';
+
+            // Animate BMI circle
+            const bmiPercent = Math.min(Math.max((bmi - 15) / (40 - 15) * 100, 0), 100);
+            const circleOffset = 251.2 - (251.2 * bmiPercent / 100);
+            bmiCircle.style.strokeDashoffset = circleOffset;
+
+            // Position BMI indicator on chart with correct mapping
+            const minBMI = 15;
+            const maxBMI = 40;
+            
+            // Calculate the exact position based on BMI ranges:
+            let chartPosition;
+            if (bmi < 18.5) {
+                chartPosition = (bmi - minBMI) / (18.5 - minBMI) * 15;
+            } else if (bmi < 25) {
+                chartPosition = 15 + (bmi - 18.5) / (25 - 18.5) * 35;
+            } else if (bmi < 30) {
+                chartPosition = 50 + (bmi - 25) / (30 - 25) * 25;
+            } else {
+                chartPosition = 75 + (bmi - 30) / (maxBMI - 30) * 25;
+            }
+            
+            // Ensure position stays within bounds
+            chartPosition = Math.min(Math.max(chartPosition, 0), 100);
+            bmiIndicator.style.left = `${chartPosition}%`;
+
+            // Show results section
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Save to history
+            saveToHistory(roundedBMI, category, new Date().toLocaleDateString('fa-IR'));
+        });
+
+        // Save to localStorage
+        function saveToHistory(bmi, category, date) {
+            let history = JSON.parse(localStorage.getItem('bmiHistory')) || [];
+            history.unshift({ bmi, category, date });
+            if (history.length > 10) history = history.slice(0, 10);
+            localStorage.setItem('bmiHistory', JSON.stringify(history));
+        }
+
+        // Load history
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('bmiHistory')) || [];
+            historyList.innerHTML = '';
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-gray-500 text-center py-4">تاریخچه‌ای یافت نشد</p>';
+                return;
+            }
+
+            history.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'flex justify-between items-center p-3 bg-gray-100 rounded-lg';
+                itemElement.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center ${getCategoryColor(item.category)} text-white font-bold">
+                            ${item.bmi}
+                        </div>
+                        <div class="mr-3">
+                            <p class="font-medium">${item.category}</p>
+                            <p class="text-xs text-gray-500">${item.date}</p>
+                        </div>
+                    </div>
+                    <button class="text-gray-500 hover:text-primary delete-history" data-index="${index}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                historyList.appendChild(itemElement);
+            });
+
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-history').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.currentTarget.getAttribute('data-index');
+                    deleteHistoryItem(index);
+                });
+            });
+        }
+
+        function getCategoryColor(category) {
+            switch(category) {
+                case 'کم‌وزن': return 'bg-blue-500';
+                case 'نرمال': return 'bg-green-500';
+                case 'اضافه وزن': return 'bg-yellow-500';
+                case 'چاق': return 'bg-red-500';
+                default: return 'bg-gray-500';
+            }
+        }
+
+        function deleteHistoryItem(index) {
+            let history = JSON.parse(localStorage.getItem('bmiHistory')) || [];
+            history.splice(index, 1);
+            localStorage.setItem('bmiHistory', JSON.stringify(history));
+            loadHistory();
+        }
+
+        // Clear history
+        clearHistory.addEventListener('click', () => {
+            if (confirm('آیا از پاک کردن تاریخچه مطمئن هستید؟')) {
+                localStorage.removeItem('bmiHistory');
+                loadHistory();
+            }
+        });
+
+        // Save button
+        saveBtn.addEventListener('click', () => {
+            if (bmiValue.textContent !== '--') {
+                saveToHistory(
+                    parseFloat(bmiValue.textContent),
+                    bmiCategory.textContent.replace('وضعیت: ', ''),
+                    new Date().toLocaleDateString('fa-IR')
+                );
+
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-4 left-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center';
+                notification.innerHTML = `
+                    <i class="fas fa-check-circle ml-2"></i>
+                    نتیجه با موفقیت ذخیره شد
+                `;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                    setTimeout(() => notification.remove(), 300);
+                }, 2000);
+            }
+        });
+
+        // Share button
+        shareBtn.addEventListener('click', () => {
+            if (bmiValue.textContent !== '--') {
+                const shareText = `شاخص توده بدنی من: ${bmiValue.textContent} (${bmiCategory.textContent})\n\nمحاسبه شده با محاسبه‌گر BMI\n${window.location.href}`;
+
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'نتیجه محاسبه BMI من',
+                        text: shareText,
+                        url: window.location.href
+                    }).catch(err => {
+                        console.log('Error sharing:', err);
+                        fallbackShare(shareText);
+                    });
+                } else {
+                    fallbackShare(shareText);
+                }
+            }
+        });
+
+        function fallbackShare(text) {
+            // Copy to clipboard
+            navigator.clipboard.writeText(text).then(() => {
+                alert('نتیجه کپی شد! می‌توانید آن را در هر برنامه‌ای پیست کنید.');
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                prompt('لطفاً این متن را کپی کنید:', text);
+            });
+        }
+
+        // History button
+        historyBtn.addEventListener('click', () => {
+            loadHistory();
+            historyModal.classList.remove('hidden');
+        });
+
+        closeHistory.addEventListener('click', () => {
+            historyModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        historyModal.addEventListener('click', (e) => {
+            if (e.target === historyModal) {
+                historyModal.classList.add('hidden');
+            }
+        });
+
+        // Accordion functionality for FAQ
+        document.querySelectorAll('.accordion-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.nextElementSibling;
+                const icon = btn.querySelector('i');
+
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // Dark mode toggle
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+
+            if (document.body.classList.contains('dark-mode')) {
+                darkModeToggle.innerHTML = '<i class="fas fa-sun text-white"></i>';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                darkModeToggle.innerHTML = '<i class="fas fa-moon text-white"></i>';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.innerHTML = '<i class="fas fa-sun text-white"></i>';
+        }
+
+        // Initialize sliders
+        heightInput.dispatchEvent(new Event('input'));
+        weightInput.dispatchEvent(new Event('input'));
+
+        // Set default values
+        heightInput.value = 170;
+        weightInput.value = 70;
+    </script>
+</body>
+</html>
